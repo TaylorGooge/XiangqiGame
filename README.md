@@ -12,5 +12,5 @@ The entire game can be found in the XiangqiGame.py file. The test file is also p
 ## Getting started-
 You begin the game by instantiating a game object. This will set up the board in the standard configuration. <br/>
 game = XiangqiGame()<br/><br/>
-Moves are made using alrebraic notation to indicate the desired movement.
+Moves are made using alrebraic notation to indicate the desired movement.<br/>
 game.make_move(“A5”,”A4”)<br/>
