@@ -14,6 +14,6 @@ To play this game fork this repo and run the xiangqigame.py file on the commandl
 ## Getting started-
 You begin the game by instantiating a game object. This will set up the board in the standard configuration. <br/>
 game = XiangqiGame()<br/><br/>
-![Standard Starting Position of the Xiangqi Board](https://imgur.com/a/rGruxSe) </br>
+![Standard Starting Position of the Xiangqi Board](board.png) </br>
 Moves are made using alrebraic notation to indicate the desired movement.<br/>
 game.make_move(“A5”,”A4”)<br/>
