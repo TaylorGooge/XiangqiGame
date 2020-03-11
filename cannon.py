@@ -1,5 +1,4 @@
 from baseclasses import Piece
-
 class Cannon(Piece):
     """
     This class inherits from the Piece class and instantiates a General object.
@@ -49,7 +48,7 @@ class Cannon(Piece):
         potential_moves = []
         start = end
 
-        # vertical upward move
+        # vertical downward move
         counter = int(start[1:]) - 1
         base = 1
         if counter >= 1:
@@ -60,6 +59,8 @@ class Cannon(Piece):
                 if result is None and skipped_space is False:
                     potential_moves.append(temp)
                     counter -= 1
+                elif result is None and skipped_space is True:
+                    counter -= 1
                 elif result is not None and skipped_space is False:
                     skipped_space = True
                     counter -= 1
@@ -69,7 +70,7 @@ class Cannon(Piece):
                 else:
                     counter -= 1
 
-        # vertical downward move
+        # vertical upward move
         counter = int(start[1:]) + 1
         base = 10
         if counter <= base:
@@ -80,12 +81,15 @@ class Cannon(Piece):
                 if result is None and skipped_space is False:
                     potential_moves.append(temp)
                     counter += 1
+                elif result is None and skipped_space is True:
+                    counter += 1
                 elif result is not None and skipped_space is False:
                     skipped_space = True
                     counter += 1
                 elif result is not None and skipped_space is True and result.get_color() != self.get_color():
                     potential_moves.append(temp)
                     counter += 1
+                    break
                 else:
                     counter += 1
 
@@ -100,13 +104,15 @@ class Cannon(Piece):
                 if result is None and skipped_space is False:
                     potential_moves.append(temp)
                     counter += 1
+                elif result is None and skipped_space is True:
+                    counter += 1
                 elif result is not None and skipped_space is False:
                     skipped_space = True
                     counter += 1
                 elif result is not None and skipped_space is True and result.get_color() != self.get_color():
-                    skipped_space = None
                     potential_moves.append(temp)
                     counter += 1
+                    break
                 else:
                     counter += 1
 
@@ -121,6 +127,8 @@ class Cannon(Piece):
                 if result is None and skipped_space is False:
                     potential_moves.append(temp)
                     counter -= 1
+                elif result is None and skipped_space is True:
+                    counter -= 1
                 elif result is not None and skipped_space is False:
                     skipped_space = True
                     counter -= 1
@@ -128,7 +136,10 @@ class Cannon(Piece):
                     skipped_space -= 1
                     potential_moves.append(temp)
                     counter -= 1
+                    break
                 else:
                     counter -= 1
 
         self.update_potential_moves(potential_moves)
+
+
