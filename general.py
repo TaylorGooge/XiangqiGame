@@ -1,5 +1,7 @@
 from baseclasses import Piece
 
+
+
 class General(Piece):
     """
     This class inherits from the Piece class and instantiates a General object.
@@ -87,7 +89,7 @@ class General(Piece):
                 elif board_object.get_space_info(temp) is not None and general_covered is False:
                     result = board_object.get_space_info(temp)
                     counter -= 1
-                    if result.get_title() == "G" and result.get_color() != temp_start_obj.get_color():
+                    if result.get_title() == "G" and result.get_color() != self.get_color():
                         counter -= 1
                         return False
                     else:

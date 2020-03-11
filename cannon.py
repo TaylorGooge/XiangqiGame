@@ -1,4 +1,7 @@
 from baseclasses import Piece
+
+
+
 class Cannon(Piece):
     """
     This class inherits from the Piece class and instantiates a General object.
@@ -141,5 +144,3 @@ class Cannon(Piece):
                     counter -= 1
 
         self.update_potential_moves(potential_moves)
-
-
