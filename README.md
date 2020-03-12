@@ -9,7 +9,7 @@ This is my first serious program in Python (and ever) and I hope to improve it o
 
 
 ## Download-  
-To play this game fork this repo and run the xiangqigame.py file on the commandline.
+To play this game clone this repo and run the xiangqigame.py file on the commandline.
 
 ## Getting started-
 You begin the game by instantiating a game object. This will set up the board in the standard configuration. <br/>
