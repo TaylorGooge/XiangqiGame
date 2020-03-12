@@ -1,4 +1,3 @@
-import copy
 from baseclasses import Piece, Error, InvalidMoveError
 from general import General
 from chariot import Chariot
@@ -8,18 +7,21 @@ from advisor import Advisor
 from cannon import Cannon
 from soldier import Soldier
 
+
+def main():
+    pass
+
+
 class XiangqiGame:
     """
-    This class contains the board game and game state. It also contains methods to: set game pieces, print the board,
-    get space info, update board, get game state, update game state, empty space validation, is in check, move_exception,
-    and make move.
+    This class contains the board game  and all functions necessary for the board to function during a game.
     """
 
     def __init__(self):
         """
-        This constructor instantiates a game board, initializes and adds the game piece objects to the board,
+        This constructor instantiates a game board, instantiates and adds the game piece objects to the board,
         initializes the game state to "unfinished",  initializes the current turn as the red players,
-        and initalizes the in-check status of the players.
+        and initializes the in-check status of the players.
         """
         self._board = self._board = {"a1": None, "b1": None, "c1": None, "d1": None, "e1": None, "f1": None, "g1": None,
                                      "h1": None, "i1": None,
@@ -182,7 +184,7 @@ class XiangqiGame:
         self.update_board("i7", black_sol_5)
         self._black_pieces.append(black_sol_5)
 
-        self._game_sate = "UNFINISHED"
+        self._game_state = "UNFINISHED"
         self._turn = True
 
         self.generate_moves()
@@ -256,7 +258,7 @@ class XiangqiGame:
         This function returns the current state of the game.
         :return: UNFINISHED, RED_WON, BLACK_WON
         """
-        return self._game_sate
+        return self._game_state
 
     def update_game_state(self, value):
         """
@@ -264,7 +266,10 @@ class XiangqiGame:
         :param value: RED_WON, BLACK_WON
         :return: None
         """
-        self._game_sate = value
+        self._game_state = value
+
+        if self._game_state != "UNFINISHED":
+            return self._game_state
 
     def get_board(self):
         """
@@ -278,7 +283,6 @@ class XiangqiGame:
         When in it is determined that a player is in check this function is called to update the in_check dictionary
         :return: None
         """
-
         if color == "red":
             self._red_in_check = {"red": value, "object": game_space}
         elif color == "black":
@@ -329,14 +333,6 @@ class XiangqiGame:
                 if end_col in valid_columns:
                     if end_row in valid_rows:
                         return True
-                    else:
-                        return False
-                else:
-                    return False
-            else:
-                return False
-        else:
-            return False
 
     def get_turn(self):
         """
@@ -401,7 +397,7 @@ class XiangqiGame:
 
     def stalemate(self):
         """
-        This functiond declares a stalemate when there are not valid moves but no player is in check.
+        This function declares a stalemate when there are not valid moves but no player is in check.
         :return: None
         """
         if self.is_in_check("black") is False:
@@ -438,7 +434,7 @@ class XiangqiGame:
                     result = self.get_space_info(moves)
                     if result.get_title() == "G" and result.get_color() == "black":
                         self.update_in_check("black", True, piece.get_location())
-                        print(self.get_in_check_dicts("black"))
+                        print("Black player is in check")
         for piece in self.get_black_pieces():
             for moves in piece.get_potential_moves():
                 if self.get_space_info(moves) is None:
@@ -447,53 +443,59 @@ class XiangqiGame:
                     result = self.get_space_info(moves)
                     if result.get_title() == "G" and result.get_color() == "red":
                         self.update_in_check("red", True, piece.get_location())
-                        print(self.get_in_check_dicts("red"))
+                        print("Red player is in check")
 
     def avoid_check_mate(self):
-        ally_pieces = []
-        enemy_pieces = []
+        """
+        This function determines whether a player can avoid check-mate.
+        :return: The game state is either updated to reflect a win, or the in-check status is updated and the game
+        continues.
+        """
+        beat_check = False
 
         if self.is_in_check("red") is True:
             temp_color = "red"
             for pieces in self.get_red_pieces():
-                ally_pieces.append(pieces)
-            for pieces in self.get_black_pieces():
-                enemy_pieces.append(pieces)
+                for moves in pieces.get_potential_moves():
+                    if self.get_space_info(moves) is None:
+                        self.out_of_check(temp_color)
+                        self.update_board(moves, pieces)
+                        self.generate_moves()
+                        self.in_check_determine()
+                        if self.is_in_check(temp_color) is False:
+                            beat_check = True
+                            self.update_board(moves, None)
+                        else:
+                            self.update_board(moves, None)
+            if beat_check is True:
+                self.out_of_check(temp_color)
+                self.generate_moves()
+            else:
+                self.declare_winner(temp_color)
         elif self.is_in_check("black") is True:
             temp_color = "black"
             for pieces in self.get_black_pieces():
-                ally_pieces.append(pieces)
-            for pieces in self.get_red_pieces():
-                enemy_pieces.append(pieces)
-        else:
-            return
-
-        temp_board_obj = copy.deepcopy(self)
-        out_of_check = False
-        for pieces in enemy_pieces:
-            temp_obj = copy.deepcopy(pieces)
-            temp_board_obj.update_board(temp_obj.get_location(), temp_obj)
-        for pieces in ally_pieces:
-            temp_obj = pieces
-            for moves in temp_obj.get_potential_moves():
-                temp_board_obj.update_in_check(temp_color, False, None)
-                temp_board_obj.update_board(moves, temp_obj)
-                temp_board_obj.update_board(temp_obj.get_location(), None)
-                temp_board_obj.generate_moves()
-                temp_board_obj.in_check_determine()
-                temp_dict = temp_board_obj.get_in_check_dicts(temp_color)
-                if temp_dict["object"] is None:
-                    out_of_check = True
-
-        if out_of_check is True:
-            self.out_of_check(temp_color)
-        else:
-            self.declare_winner(temp_color)
+                for moves in pieces.get_potential_moves():
+                    if self.get_space_info(moves) is None:
+                        self.out_of_check(temp_color)
+                        self.update_board(moves, pieces)
+                        self.generate_moves()
+                        self.in_check_determine()
+                        if self.is_in_check(temp_color) is False:
+                            beat_check = True
+                            self.update_board(moves, None)
+                        else:
+                            self.update_board(moves, None)
+            if beat_check is True:
+                self.out_of_check(temp_color)
+                self.generate_moves()
+            else:
+                self.declare_winner(temp_color)
 
     def make_move_helper(self, start, end, temp_start_obj):
         """
         When a valid move is determined this function updates the board, updates the turn, generates all possible moves
-         for pieces on the board, determined if the player is in check, stalemate, and can avoid checkmate.
+        for pieces on the board, determined if the player is in check, stalemate, and can avoid checkmate.
         :param start: The start position of the valid move.
         :param end: The end position of the valid move.
         :param temp_start_obj: The piece object to move.
@@ -521,61 +523,64 @@ class XiangqiGame:
         board_object = self
 
         if self.turn_validation(temp_start_obj) is False:
-            return False
+            return "It is not your turn"
 
         if self.move_except(start, end) is not True:
             raise InvalidMoveError("Try a valid algebraic notation input")
 
         if self.get_game_state() != "UNFINISHED":
-            return False
+            return "Game Over"
         else:
-            # calls the appropriate functions for the move, updates the board, and checks for checkmate
             if temp_type == "E":
                 if temp_start_obj.elephant_move_check(end, board_object,
                                                       temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
                     return True
                 else:
-                    return False
+                    return "That is not a valid Elephant move"
             elif temp_type == "A":
                 if temp_start_obj.advisor_move_check(end, temp_end_obj,
                                                      board_object) is True:
                     self.make_move_helper(start, end, temp_start_obj)
                     return True
                 else:
-                    return False
+                    return "That is not a valid Advisor move"
             elif temp_type == "G":
                 if temp_start_obj.general_move_check(start, end, board_object,
                                                      temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
                     return True
                 else:
-                    return False
+                    return "That is not a valid General move"
             elif temp_type == "C":
                 if temp_start_obj.chariot_move_check(end, board_object,
                                                      temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
                     return True
                 else:
-                    return False
+                    return "That is not a valid Chariot move"
             elif temp_type == "H":
                 if temp_start_obj.horse_move_check(end, board_object,
                                                    temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
                     return True
                 else:
-                    return False
+                    return "That is not a valid Horse move"
             elif temp_type == "S":
                 if temp_start_obj.soldier_move_check(end, temp_end_obj,
                                                      board_object) is True:
                     self.make_move_helper(start, end, temp_start_obj)
                     return True
                 else:
-                    return False
+                    return "That is not a valid Soldier move"
             elif temp_type == "Can":
                 if temp_start_obj.cannon_move_check(end, board_object,
                                                     temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
                     return True
                 else:
-                    return False
+                    return "That is not a valid Cannon move"
+
+
+if __name__ == "__main__":
+    main()
