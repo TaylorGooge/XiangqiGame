@@ -1,5 +1,7 @@
 from baseclasses import Piece
 
+
+
 class Soldier(Piece):
     """
     This class inherits from the Piece class and instantiates a General object.
@@ -92,7 +94,7 @@ class Soldier(Piece):
                 elif result is None:
                     potential_moves.append(temp)
                 # if the river is crossed check side to side
-            elif int(start[1:]) <= 5 and self.col_to_num(start[0]) - 1 >= 1 :
+            elif int(start[1:]) <= 5 and self.col_to_num(start[0]) - 1 >= 1:
                 temp = self.num_to_col(self.col_to_num(start[0]) - 1) + start[1:]
                 result = board_object.get_space_info(temp)
                 if result is not None and result.get_color() != self.get_color():

@@ -1,5 +1,7 @@
 from baseclasses import Piece
 
+
+
 class General(Piece):
     """
     This class inherits from the Piece class and instantiates a General object.

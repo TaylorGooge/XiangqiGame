@@ -6,6 +6,11 @@ from elephant import Elephant
 from advisor import Advisor
 from cannon import Cannon
 from soldier import Soldier
+from colorama import init, Fore, Back, Style
+init(autoreset=True)
+import itertools
+import collections
+
 
 
 def main():
@@ -201,6 +206,54 @@ class XiangqiGame:
             pieces.possible_moves(self, pieces.get_location())
         for pieces in self._black_pieces:
             pieces.possible_moves(self, pieces.get_location())
+
+    def color_board(self, a_list):
+        new_list = []
+        for spaces in a_list:
+            if game.get_space_info(spaces) is None:
+                new_list.append(" 0 ")
+            else:
+                result = game.get_space_info(spaces)
+                if result.get_color() == "red":
+                    new_list.append(Fore.RED + result.get_title())
+                elif result.get_color() == "black":
+                    new_list.append(Fore.GREEN + result.get_title())
+        a_list[:] = new_list
+
+    def print_board(self):
+        board = self.get_board()
+        board1 = list(itertools.islice(board.keys(), 0, 9))
+        board2 = list(itertools.islice(board.keys(), 9, 18))
+        board3 = list(itertools.islice(board.keys(), 18, 27))
+        board4 = list(itertools.islice(board.keys(), 27, 36))
+        board5 = list(itertools.islice(board.keys(), 36, 45))
+        board6 = list(itertools.islice(board.keys(), 45, 54))
+        board7 = list(itertools.islice(board.keys(), 54, 63))
+        board8 = list(itertools.islice(board.keys(), 63, 72))
+        board9 = list(itertools.islice(board.keys(), 72, 81))
+        board10 = list(itertools.islice(board.keys(), 81, 90))
+
+        self.color_board(board1)
+        self.color_board(board2)
+        self.color_board(board3)
+        self.color_board(board4)
+        self.color_board(board5)
+        self.color_board(board6)
+        self.color_board(board7)
+        self.color_board(board8)
+        self.color_board(board9)
+        self.color_board(board10)
+
+        print(board1)
+        print(board2)
+        print(board3)
+        print(board4)
+        print(board5)
+        print(board6)
+        print(board7)
+        print(board8)
+        print(board9)
+        print(board10)
 
     def get_red_pieces(self):
         """
@@ -517,6 +570,10 @@ class XiangqiGame:
         :param end: The end position of the valid move.
         :return: True/Fa;se
         """
+
+        if self.move_except(start, end) is not True:
+            raise InvalidMoveError("Try a valid algebraic notation input")
+
         temp_start_obj = self.get_space_info(start)
         temp_end_obj = self.get_space_info(end)
         temp_type = temp_start_obj.get_title()
@@ -525,9 +582,6 @@ class XiangqiGame:
         if self.turn_validation(temp_start_obj) is False:
             return "It is not your turn"
 
-        if self.move_except(start, end) is not True:
-            raise InvalidMoveError("Try a valid algebraic notation input")
-
         if self.get_game_state() != "UNFINISHED":
             return "Game Over"
         else:
@@ -535,6 +589,7 @@ class XiangqiGame:
                 if temp_start_obj.elephant_move_check(end, board_object,
                                                       temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
+                    self.print_board()
                     return True
                 else:
                     return "That is not a valid Elephant move"
@@ -542,6 +597,7 @@ class XiangqiGame:
                 if temp_start_obj.advisor_move_check(end, temp_end_obj,
                                                      board_object) is True:
                     self.make_move_helper(start, end, temp_start_obj)
+                    self.print_board()
                     return True
                 else:
                     return "That is not a valid Advisor move"
@@ -549,6 +605,7 @@ class XiangqiGame:
                 if temp_start_obj.general_move_check(start, end, board_object,
                                                      temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
+                    self.print_board()
                     return True
                 else:
                     return "That is not a valid General move"
@@ -556,6 +613,7 @@ class XiangqiGame:
                 if temp_start_obj.chariot_move_check(end, board_object,
                                                      temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
+                    self.print_board()
                     return True
                 else:
                     return "That is not a valid Chariot move"
@@ -563,6 +621,7 @@ class XiangqiGame:
                 if temp_start_obj.horse_move_check(end, board_object,
                                                    temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
+                    self.print_board()
                     return True
                 else:
                     return "That is not a valid Horse move"
@@ -570,6 +629,7 @@ class XiangqiGame:
                 if temp_start_obj.soldier_move_check(end, temp_end_obj,
                                                      board_object) is True:
                     self.make_move_helper(start, end, temp_start_obj)
+                    self.print_board()
                     return True
                 else:
                     return "That is not a valid Soldier move"
@@ -577,9 +637,11 @@ class XiangqiGame:
                 if temp_start_obj.cannon_move_check(end, board_object,
                                                     temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
+                    self.print_board()
                     return True
                 else:
                     return "That is not a valid Cannon move"
+
 
 
 if __name__ == "__main__":

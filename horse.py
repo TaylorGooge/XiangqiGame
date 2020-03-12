@@ -1,5 +1,6 @@
 from baseclasses import Piece
 
+
 class Horse(Piece):
     """
     This class inherits from the Piece class and instantiates a General object.
@@ -14,22 +15,6 @@ class Horse(Piece):
         """
         self._title = "H"
         super().__init__(color, location)
-        self._block_spaces = set()
-
-    def get_block_spaces(self):
-        """
-        This function returns the spaces orthagonal to the object that could be blocked.
-        :return: set
-        """
-        return self._block_spaces
-
-    def set_block_spaces(self, a_list):
-        """
-        At the conclusion of a valid move the spaces orthagonal to the object that could be blocked are updated.
-        :param a_list: The list of block spaces.
-        :return: None
-        """
-        self._block_spaces = a_list
 
     def get_title(self):
         """
@@ -65,8 +50,6 @@ class Horse(Piece):
         """
 
         potential_moves = []
-        block_spaces = []
-
         start = end
 
         # 2,1
@@ -74,7 +57,6 @@ class Horse(Piece):
         if 1 <= temp <= 9 and int(start[1:]) + 1 < 11:
             temp = self.num_to_col(temp) + str(int(start[1:]) + 1)
             block_space = self.num_to_col(self.col_to_num(start[0]) + 1) + start[1:]
-            block_spaces.append(block_space)
             temp_obj = board_object.get_space_info(temp)
             if board_object.get_space_info(block_space) is not None:
                 pass
@@ -87,7 +69,6 @@ class Horse(Piece):
         block_space = self.col_to_num(start[0]) + 1
         if 1 <= block_space <= 8 and 1 <= temp <= 9 and int(end[1:]) - 1 > 0:
             block_space = self.num_to_col(block_space) + start[1:]
-            block_spaces.append(block_space)
             temp = self.num_to_col(temp) + str(int(end[1:]) - 1)
             temp_obj = board_object.get_space_info(temp)
             if board_object.get_space_info(block_space) is not None:
@@ -100,7 +81,6 @@ class Horse(Piece):
         block_space = self.col_to_num(start[0]) + 1
         if 1 <= block_space <= 8 and temp >= 1 and int(start[1:]) + 1 < 11:
             block_space = self.num_to_col(block_space) + start[1:]
-            block_spaces.append(block_space)
             temp = self.num_to_col(temp) + str(int(end[1:]) + 1)
             temp_obj = board_object.get_space_info(temp)
             if board_object.get_space_info(block_space) is not None:
@@ -113,7 +93,6 @@ class Horse(Piece):
         block_space = self.col_to_num(start[0]) - 1
         if block_space >= 1 and temp >= 1 and int(end[1:]) - 1 > 0:
             block_space = self.num_to_col(block_space) + start[1:]
-            block_spaces.append(block_space)
             temp = self.num_to_col(temp) + str(int(end[1:]) - 1)
             temp_obj = board_object.get_space_info(temp)
             if board_object.get_space_info(block_space) is not None:
@@ -124,7 +103,6 @@ class Horse(Piece):
         # 1,2
         temp = self.col_to_num(start[0]) + 1
         block_space = start[0] + str(int(start[1:]) + 1)
-        block_spaces.append(block_space)
         if 1 <= temp <= 9 and int(end[1:]) + 2 <= 10:
             temp = self.num_to_col(temp) + str(int(end[1:]) + 2)
             temp_obj = board_object.get_space_info(temp)
@@ -139,7 +117,6 @@ class Horse(Piece):
         end = int(end[1:]) - 2
         if block_space >= 1 and 1 <= temp <= 9 and end >= 1:
             block_space = start[0] + str(block_space)
-            block_spaces.append(block_space)
             temp = self.num_to_col(temp) + str(end)
             temp_obj = board_object.get_space_info(temp)
             if board_object.get_space_info(block_space) is not None:
@@ -153,7 +130,6 @@ class Horse(Piece):
         end = int(start[1:]) - 2
         if block_space > 0 and temp >= 1 and 1 <= end <= 10:
             block_space = start[0] + str(block_space)
-            block_spaces.append(block_space)
             temp = self.num_to_col(temp) + str(end)
             temp_obj = board_object.get_space_info(temp)
             if board_object.get_space_info(block_space) is None:
@@ -168,7 +144,6 @@ class Horse(Piece):
         block_space = int(start[1:]) + 1
         if 1 <= block_space <= 10 and temp >= 1 and int(start[1:]) + 2 <= 10:
             block_space = start[0] + str(block_space)
-            block_spaces.append(block_space)
             temp = self.num_to_col(temp) + str(int(start[1:]) + 2)
             temp_obj = board_object.get_space_info(temp)
             if board_object.get_space_info(block_space) is not None:
@@ -178,4 +153,3 @@ class Horse(Piece):
                     potential_moves.append(temp)
 
         self.update_potential_moves(potential_moves)
-        self.set_block_spaces(block_spaces)
