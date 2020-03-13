@@ -7,10 +7,11 @@ from advisor import Advisor
 from cannon import Cannon
 from soldier import Soldier
 from colorama import init, Fore, Back, Style
+
 init(autoreset=True)
 import itertools
 import collections
-
+import copy
 
 
 def main():
@@ -479,6 +480,7 @@ class XiangqiGame:
         If a player can be captured during their next move this function moves the player into check.
         :return: None
         """
+
         for piece in self.get_red_pieces():
             for moves in piece.get_potential_moves():
                 if self.get_space_info(moves) is None:
@@ -487,7 +489,7 @@ class XiangqiGame:
                     result = self.get_space_info(moves)
                     if result.get_title() == "G" and result.get_color() == "black":
                         self.update_in_check("black", True, piece.get_location())
-                        print("Black player is in check")
+                        print("black is in check")
         for piece in self.get_black_pieces():
             for moves in piece.get_potential_moves():
                 if self.get_space_info(moves) is None:
@@ -496,7 +498,7 @@ class XiangqiGame:
                     result = self.get_space_info(moves)
                     if result.get_title() == "G" and result.get_color() == "red":
                         self.update_in_check("red", True, piece.get_location())
-                        print("Red player is in check")
+                        print("red is in check")
 
     def avoid_check_mate(self):
         """
@@ -504,46 +506,45 @@ class XiangqiGame:
         :return: The game state is either updated to reflect a win, or the in-check status is updated and the game
         continues.
         """
-        beat_check = False
 
+        beat_check = False
         if self.is_in_check("red") is True:
             temp_color = "red"
-            for pieces in self.get_red_pieces():
-                for moves in pieces.get_potential_moves():
-                    if self.get_space_info(moves) is None:
-                        self.out_of_check(temp_color)
-                        self.update_board(moves, pieces)
-                        self.generate_moves()
-                        self.in_check_determine()
-                        if self.is_in_check(temp_color) is False:
-                            beat_check = True
-                            self.update_board(moves, None)
-                        else:
-                            self.update_board(moves, None)
-            if beat_check is True:
-                self.out_of_check(temp_color)
-                self.generate_moves()
-            else:
-                self.declare_winner(temp_color)
         elif self.is_in_check("black") is True:
             temp_color = "black"
+        else:
+            return
+
+        if temp_color == "red":
+            for pieces in self.get_red_pieces():
+                for moves in pieces.get_potential_moves():
+                    temp_board = copy.deepcopy(self)
+                    temp_board.out_of_check(temp_color)
+                    temp_board.make_move(pieces.get_location(), moves)
+                    temp_board.generate_moves()
+                    temp_board.in_check_determine()
+                    if temp_board.is_in_check(temp_color) is False:
+                        self.out_of_check(temp_color)
+                        beat_check = True
+                    else:
+                        pass
+        elif temp_color == "black":
             for pieces in self.get_black_pieces():
                 for moves in pieces.get_potential_moves():
-                    if self.get_space_info(moves) is None:
-                        self.out_of_check(temp_color)
-                        self.update_board(moves, pieces)
-                        self.generate_moves()
-                        self.in_check_determine()
-                        if self.is_in_check(temp_color) is False:
-                            beat_check = True
-                            self.update_board(moves, None)
-                        else:
-                            self.update_board(moves, None)
-            if beat_check is True:
-                self.out_of_check(temp_color)
-                self.generate_moves()
-            else:
-                self.declare_winner(temp_color)
+                    temp_board = copy.deepcopy(self)
+                    temp_board.out_of_check(temp_color)
+                    temp_board.make_move(pieces.get_location(), moves)
+                    temp_board.generate_moves()
+                    temp_board.in_check_determine()
+                    if temp_board.is_in_check(temp_color) is False:
+                        beat_check = True
+                    else:
+                        pass
+
+        if beat_check is False:
+            self.declare_winner(temp_color)
+        else:
+            self.out_of_check(temp_color)
 
     def make_move_helper(self, start, end, temp_start_obj):
         """
@@ -589,7 +590,7 @@ class XiangqiGame:
                 if temp_start_obj.elephant_move_check(end, board_object,
                                                       temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
+                    #  self.print_board()
                     return True
                 else:
                     return "That is not a valid Elephant move"
@@ -597,7 +598,7 @@ class XiangqiGame:
                 if temp_start_obj.advisor_move_check(end, temp_end_obj,
                                                      board_object) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
+                    #  self.print_board()
                     return True
                 else:
                     return "That is not a valid Advisor move"
@@ -605,7 +606,7 @@ class XiangqiGame:
                 if temp_start_obj.general_move_check(start, end, board_object,
                                                      temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
+                    #  self.print_board()
                     return True
                 else:
                     return "That is not a valid General move"
@@ -613,7 +614,7 @@ class XiangqiGame:
                 if temp_start_obj.chariot_move_check(end, board_object,
                                                      temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
+                    #  self.print_board()
                     return True
                 else:
                     return "That is not a valid Chariot move"
@@ -621,7 +622,7 @@ class XiangqiGame:
                 if temp_start_obj.horse_move_check(end, board_object,
                                                    temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
+                    #  self.print_board()
                     return True
                 else:
                     return "That is not a valid Horse move"
@@ -629,7 +630,7 @@ class XiangqiGame:
                 if temp_start_obj.soldier_move_check(end, temp_end_obj,
                                                      board_object) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
+                    # self.print_board()
                     return True
                 else:
                     return "That is not a valid Soldier move"
@@ -637,12 +638,12 @@ class XiangqiGame:
                 if temp_start_obj.cannon_move_check(end, board_object,
                                                     temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
+                    #  self.print_board()
                     return True
                 else:
                     return "That is not a valid Cannon move"
 
 
-
 if __name__ == "__main__":
     main()
+

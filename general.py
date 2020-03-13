@@ -151,7 +151,7 @@ class General(Piece):
 
         # 0, -1
         temp = int(start[1:]) - 1
-        if 7 <= temp <= 10:
+        if 7 <= temp <= 10 or 1<= temp <= 3:
             temp = start[0] + str(temp)
             temp_obj = board_object.get_space_info(temp)
             if temp_obj is None or temp_obj.get_color() != self.get_color():

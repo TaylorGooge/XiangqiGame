@@ -69,7 +69,7 @@ class Cannon(Piece):
                     counter -= 1
                 elif result is not None and skipped_space is True and result.get_color() != self.get_color():
                     potential_moves.append(temp)
-                    counter -= 1
+                    break
                 else:
                     counter -= 1
 
