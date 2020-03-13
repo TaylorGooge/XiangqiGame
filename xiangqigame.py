@@ -590,7 +590,7 @@ class XiangqiGame:
                 if temp_start_obj.elephant_move_check(end, board_object,
                                                       temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
+                    #  self.print_board()
                     return True
                 else:
                     return "That is not a valid Elephant move"
@@ -598,7 +598,7 @@ class XiangqiGame:
                 if temp_start_obj.advisor_move_check(end, temp_end_obj,
                                                      board_object) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
+                    #  self.print_board()
                     return True
                 else:
                     return "That is not a valid Advisor move"
@@ -606,7 +606,7 @@ class XiangqiGame:
                 if temp_start_obj.general_move_check(start, end, board_object,
                                                      temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
+                    #  self.print_board()
                     return True
                 else:
                     return "That is not a valid General move"
@@ -614,7 +614,7 @@ class XiangqiGame:
                 if temp_start_obj.chariot_move_check(end, board_object,
                                                      temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
+                    #  self.print_board()
                     return True
                 else:
                     return "That is not a valid Chariot move"
@@ -622,7 +622,7 @@ class XiangqiGame:
                 if temp_start_obj.horse_move_check(end, board_object,
                                                    temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
+                    #  self.print_board()
                     return True
                 else:
                     return "That is not a valid Horse move"
@@ -630,7 +630,7 @@ class XiangqiGame:
                 if temp_start_obj.soldier_move_check(end, temp_end_obj,
                                                      board_object) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
+                    # self.print_board()
                     return True
                 else:
                     return "That is not a valid Soldier move"
@@ -638,7 +638,7 @@ class XiangqiGame:
                 if temp_start_obj.cannon_move_check(end, board_object,
                                                     temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
+                    #  self.print_board()
                     return True
                 else:
                     return "That is not a valid Cannon move"

@@ -1,10 +1,9 @@
 # XiangqiGame
-This project is an implementation of a Xiangqi (Chinese Chess) game utilizing the Python standard library. <br/><br/>
+This project is an implementation of a Xiangqi (Chinese Chess) game utilizing Python. <br/><br/>
 
 To learn to play Xiangqi I would recommend visiting the [Xiangqi Wiki](https://en.wikipedia.org/wiki/Xiangqi) and [Ancient Chess](http://ancientchess.com/page/play-xiangqi.htm).
 
-This is my first serious program in Python (and ever) and I hope to improve it over time to include revising the checkmate algorithm and potentially creating a visual board. 
-
+This is my first serious program in Python (and ever) and I hope to improve it over time. 
 
 
 
