@@ -54,24 +54,21 @@ class Chariot(Piece):
 
         # horizontal leftward move
         counter = self.col_to_num(start[0]) - 1
+
         end = 1
         skipped_space = False
         while counter >= end:
             temp = self.num_to_col(counter)
             temp = temp + start[1:]
             temp_obj = board_object.get_space_info(temp)
-            if board_object.get_space_info(temp) is not None and skipped_space is False:
+            if temp_obj is not None and skipped_space is False:
                 if temp_obj.get_color() == self.get_color():
-                    skipped_space = True
-                    counter -= 1
+                    break
                 else:
                     potential_moves.append(temp)
-                    skipped_space = True
-                    counter -= 1
-            elif skipped_space is False and board_object.get_space_info(temp) is None:
+                    break
+            elif temp_obj is None and skipped_space is False:
                 potential_moves.append(temp)
-                counter -= 1
-            else:
                 counter -= 1
 
         # horizontal rightward move
@@ -84,16 +81,12 @@ class Chariot(Piece):
                 temp_obj = board_object.get_space_info(temp)
                 if temp_obj is not None and skipped_space is False:
                     if temp_obj.get_color() == self.get_color():
-                        skipped_space = True
-                        counter += 1
+                        break
                     else:
                         potential_moves.append(temp)
-                        skipped_space = True
-                        counter += 1
+                        break
                 elif temp_obj is None and skipped_space is False:
                     potential_moves.append(temp)
-                    counter += 1
-                else:
                     counter += 1
 
         # upward vertical move
@@ -106,16 +99,12 @@ class Chariot(Piece):
                 temp_obj = board_object.get_space_info(temp)
                 if temp_obj is not None and skipped_space is False:
                     if temp_obj.get_color() == self.get_color():
-                        skipped_space = True
-                        counter += 1
+                        break
                     else:
                         potential_moves.append(temp)
-                        skipped_space = True
-                        counter += 1
+                        break
                 elif temp_obj is None and skipped_space is False:
                     potential_moves.append(temp)
-                    counter += 1
-                else:
                     counter += 1
 
             # downward vertical
@@ -128,16 +117,12 @@ class Chariot(Piece):
                 temp_obj = board_object.get_space_info(temp)
                 if temp_obj is not None and skipped_space is False:
                     if temp_obj.get_color() == self.get_color():
-                        skipped_space = True
-                        counter -= 1
+                        break
                     else:
                         potential_moves.append(temp)
-                        skipped_space = True
-                        counter -= 1
+                        break
                 elif temp_obj is None and skipped_space is False:
                     potential_moves.append(temp)
-                    counter -= 1
-                else:
                     counter -= 1
 
         self.update_potential_moves(potential_moves)
