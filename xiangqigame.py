@@ -6,11 +6,7 @@ from elephant import Elephant
 from advisor import Advisor
 from cannon import Cannon
 from soldier import Soldier
-from colorama import Fore, Style, init
-
-init(convert=True)
 import itertools
-import collections
 import copy
 
 
@@ -195,8 +191,8 @@ class XiangqiGame:
 
         self.generate_moves()
 
-        self._red_in_check = {"red": False, "object": None}
-        self._black_in_check = {"black": False, "object": None}
+        self._red_in_check = {"red": False}
+        self._black_in_check = {"black": False}
 
     def generate_moves(self):
         """
@@ -318,15 +314,15 @@ class XiangqiGame:
         """
         return self._board
 
-    def update_in_check(self, color, value, game_space):
+    def update_in_check(self, color, value):
         """
         When in it is determined that a player is in check this function is called to update the in_check dictionary
         :return: None
         """
         if color == "red":
-            self._red_in_check = {"red": value, "object": game_space}
+            self._red_in_check = {"red": value}
         elif color == "black":
-            self._black_in_check = {"black": value, "object": game_space}
+            self._black_in_check = {"black": value}
 
     def is_in_check(self, player):
         """
@@ -338,18 +334,6 @@ class XiangqiGame:
             return self._red_in_check["red"]
         elif player == "black":
             return self._black_in_check["black"]
-        else:
-            return "Invalid player"
-
-    def get_in_check_dicts(self, player):
-        """
-        This function returns the entirety of the in_check_dict for the passed player.
-        :param player: red/black
-        """
-        if player == "red":
-            return self._red_in_check
-        elif player == "black":
-            return self._black_in_check
         else:
             return "Invalid player"
 
@@ -431,10 +415,10 @@ class XiangqiGame:
         :return: None
         """
         if temp_color == "red":
-            self.update_in_check("red", False, None)
+            self.update_in_check("red", False)
             return
         else:
-            self.update_in_check("black", False, None)
+            self.update_in_check("black", False)
             return
 
     def stalemate(self):
@@ -480,7 +464,7 @@ class XiangqiGame:
                 else:
                     result = self.get_space_info(moves)
                     if result.get_title() == "G" and result.get_color() == "black":
-                        self.update_in_check("black", True, piece.get_location())
+                        self.update_in_check("black", True)
         for piece in self.get_black_pieces():
             for moves in piece.get_potential_moves():
                 if self.get_space_info(moves) is None:
@@ -488,7 +472,7 @@ class XiangqiGame:
                 else:
                     result = self.get_space_info(moves)
                     if result.get_title() == "G" and result.get_color() == "red":
-                        self.update_in_check("red", True, piece.get_location())
+                        self.update_in_check("red", True)
 
     def avoid_check_mate(self):
         """
@@ -580,60 +564,47 @@ class XiangqiGame:
                 if temp_start_obj.elephant_move_check(end, board_object,
                                                       temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
-                    return True
                 else:
                     return "That is not a valid Elephant move"
             elif temp_type == "A":
                 if temp_start_obj.advisor_move_check(end, temp_end_obj,
                                                      board_object) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
-                    return True
                 else:
                     return "That is not a valid Advisor move"
             elif temp_type == "G":
                 if temp_start_obj.general_move_check(start, end, board_object,
                                                      temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
-                    return True
                 else:
                     return "That is not a valid General move"
             elif temp_type == "C":
                 if temp_start_obj.chariot_move_check(end, board_object,
                                                      temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
-                    return True
                 else:
                     return "That is not a valid Chariot move"
             elif temp_type == "H":
                 if temp_start_obj.horse_move_check(end, board_object,
                                                    temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
-                    return True
                 else:
                     return "That is not a valid Horse move"
             elif temp_type == "S":
                 if temp_start_obj.soldier_move_check(end, temp_end_obj,
                                                      board_object) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
-                    return True
                 else:
                     return "That is not a valid Soldier move"
             elif temp_type == "Can":
                 if temp_start_obj.cannon_move_check(end, board_object,
                                                     temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    self.print_board()
-                    return True
                 else:
                     return "That is not a valid Cannon move"
+        self.print_board()
+        return True
 
 
 if __name__ == "__main__":
     main()
-
