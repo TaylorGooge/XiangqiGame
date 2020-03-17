@@ -6,9 +6,9 @@ from elephant import Elephant
 from advisor import Advisor
 from cannon import Cannon
 from soldier import Soldier
-from colorama import init, Fore, Back, Style
+from colorama import Fore, Style, init
 
-init(autoreset=True)
+init(convert=True)
 import itertools
 import collections
 import copy
@@ -208,42 +208,28 @@ class XiangqiGame:
         for pieces in self._black_pieces:
             pieces.possible_moves(self, pieces.get_location())
 
-    def color_board(self, a_list):
-        new_list = []
-        for spaces in a_list:
-            if game.get_space_info(spaces) is None:
-                new_list.append(" 0 ")
-            else:
-                result = game.get_space_info(spaces)
-                if result.get_color() == "red":
-                    new_list.append(Fore.RED + result.get_title())
-                elif result.get_color() == "black":
-                    new_list.append(Fore.GREEN + result.get_title())
-        a_list[:] = new_list
-
     def print_board(self):
-        board = self.get_board()
-        board1 = list(itertools.islice(board.keys(), 0, 9))
-        board2 = list(itertools.islice(board.keys(), 9, 18))
-        board3 = list(itertools.islice(board.keys(), 18, 27))
-        board4 = list(itertools.islice(board.keys(), 27, 36))
-        board5 = list(itertools.islice(board.keys(), 36, 45))
-        board6 = list(itertools.islice(board.keys(), 45, 54))
-        board7 = list(itertools.islice(board.keys(), 54, 63))
-        board8 = list(itertools.islice(board.keys(), 63, 72))
-        board9 = list(itertools.islice(board.keys(), 72, 81))
-        board10 = list(itertools.islice(board.keys(), 81, 90))
+        values = self._board.values()
+        val = []
+        for item in values:
+            if item is not None:
+                if item.get_title() == "Can":
+                    val.append("[" + item.__repr__() + "]")
+                else:
+                    val.append("[ " + item.__repr__() + " ]")
+            else:
+                val.append("[    ]")
 
-        self.color_board(board1)
-        self.color_board(board2)
-        self.color_board(board3)
-        self.color_board(board4)
-        self.color_board(board5)
-        self.color_board(board6)
-        self.color_board(board7)
-        self.color_board(board8)
-        self.color_board(board9)
-        self.color_board(board10)
+        board1 = list(itertools.islice(val, 0, 9))
+        board2 = list(itertools.islice(val, 9, 18))
+        board3 = list(itertools.islice(val, 18, 27))
+        board4 = list(itertools.islice(val, 27, 36))
+        board5 = list(itertools.islice(val, 36, 45))
+        board6 = list(itertools.islice(val, 45, 54))
+        board7 = list(itertools.islice(val, 54, 63))
+        board8 = list(itertools.islice(val, 63, 72))
+        board9 = list(itertools.islice(val, 72, 81))
+        board10 = list(itertools.islice(val, 81, 90))
 
         print(board1)
         print(board2)
@@ -431,9 +417,11 @@ class XiangqiGame:
         """
         if temp_color == "red":
             self.update_game_state("BLACK_WON")
+            print("Black won")
             return
         else:
             self.update_game_state("RED_WON")
+            print("Red won")
             return
 
     def out_of_check(self, temp_color):
@@ -462,8 +450,10 @@ class XiangqiGame:
             if len(black_moves) == 0:
                 if self.get_turn() == "True":
                     self.update_game_state("RED_WON")
+                    print("Red won")
                 else:
                     self.update_game_state("BLACK_WON")
+                    print("Black won")
         elif self.is_in_check("red") is False:
             red_moves = []
             for piece in self.get_red_pieces():
@@ -472,8 +462,10 @@ class XiangqiGame:
             if len(red_moves) == 0:
                 if self.get_turn() == "True":
                     self.update_game_state("RED_WON")
+                    print("Red won")
                 else:
                     self.update_game_state("BLACK_WON")
+                    print("Black won")
 
     def in_check_determine(self):
         """
@@ -489,7 +481,6 @@ class XiangqiGame:
                     result = self.get_space_info(moves)
                     if result.get_title() == "G" and result.get_color() == "black":
                         self.update_in_check("black", True, piece.get_location())
-                        print("black is in check")
         for piece in self.get_black_pieces():
             for moves in piece.get_potential_moves():
                 if self.get_space_info(moves) is None:
@@ -498,7 +489,6 @@ class XiangqiGame:
                     result = self.get_space_info(moves)
                     if result.get_title() == "G" and result.get_color() == "red":
                         self.update_in_check("red", True, piece.get_location())
-                        print("red is in check")
 
     def avoid_check_mate(self):
         """
@@ -590,7 +580,7 @@ class XiangqiGame:
                 if temp_start_obj.elephant_move_check(end, board_object,
                                                       temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    #  self.print_board()
+                    self.print_board()
                     return True
                 else:
                     return "That is not a valid Elephant move"
@@ -598,7 +588,7 @@ class XiangqiGame:
                 if temp_start_obj.advisor_move_check(end, temp_end_obj,
                                                      board_object) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    #  self.print_board()
+                    self.print_board()
                     return True
                 else:
                     return "That is not a valid Advisor move"
@@ -606,7 +596,7 @@ class XiangqiGame:
                 if temp_start_obj.general_move_check(start, end, board_object,
                                                      temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    #  self.print_board()
+                    self.print_board()
                     return True
                 else:
                     return "That is not a valid General move"
@@ -614,7 +604,7 @@ class XiangqiGame:
                 if temp_start_obj.chariot_move_check(end, board_object,
                                                      temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    #  self.print_board()
+                    self.print_board()
                     return True
                 else:
                     return "That is not a valid Chariot move"
@@ -622,7 +612,7 @@ class XiangqiGame:
                 if temp_start_obj.horse_move_check(end, board_object,
                                                    temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    #  self.print_board()
+                    self.print_board()
                     return True
                 else:
                     return "That is not a valid Horse move"
@@ -630,7 +620,7 @@ class XiangqiGame:
                 if temp_start_obj.soldier_move_check(end, temp_end_obj,
                                                      board_object) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    # self.print_board()
+                    self.print_board()
                     return True
                 else:
                     return "That is not a valid Soldier move"
@@ -638,7 +628,7 @@ class XiangqiGame:
                 if temp_start_obj.cannon_move_check(end, board_object,
                                                     temp_end_obj) is True:
                     self.make_move_helper(start, end, temp_start_obj)
-                    #  self.print_board()
+                    self.print_board()
                     return True
                 else:
                     return "That is not a valid Cannon move"

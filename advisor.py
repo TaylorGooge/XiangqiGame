@@ -1,5 +1,6 @@
 from baseclasses import Piece
 
+
 class Advisor(Piece):
     """
     This class inherits from the Piece class and instantiates a General object.
@@ -13,6 +14,12 @@ class Advisor(Piece):
         """
         self._title = "A"
         super().__init__(color, location)
+
+    def __repr__(self):
+        if self._color == "red":
+            return f'{"R"}{self._title}'
+        else:
+            return f'{"B"}{self._title}'
 
     def get_title(self):
         """
@@ -47,43 +54,16 @@ class Advisor(Piece):
         :param board_object: The board class object.
         :return: None
         """
-
+        allowable_moves = [(1, 1), (-1, 1), (-1, -1), (1, -1)]
         potential_moves = []
         start = end
 
-        # 1,1 move
-        temp = self.num_to_col(self.col_to_num(start[0]) + 1)
-        if int(start[1:]) + 1 <= 10:
-            temp = temp + str(int(start[1:]) + 1)
-            temp_obj = board_object.get_space_info(temp)
-            if self.castle_check(temp) is True:
-                if temp_obj is None or temp_obj.get_color() != self.get_color():
-                    potential_moves.append(temp)
-
-        # -1, 1 move
-        temp = self.num_to_col(self.col_to_num(start[0]) - 1)
-        if int(start[1:]) + 1 <= 10:
-            temp = temp + str(int(start[1:]) + 1)
-            temp_obj = board_object.get_space_info(temp)
-            if self.castle_check(temp) is True:
-                if temp_obj is None or temp_obj.get_color() != self.get_color():
-                    potential_moves.append(temp)
-
-        # 1,-1 move
-        temp = self.num_to_col(self.col_to_num(start[0]) + 1)
-        if int(start[1:]) - 1 >= 1:
-            temp = temp + str(int(start[1:]) - 1)
-            temp_obj = board_object.get_space_info(temp)
-            if self.castle_check(temp) is True:
-                if temp_obj is None or temp_obj.get_color() != self.get_color():
-                    potential_moves.append(temp)
-
-        # -1, -1 move
-        temp = self.num_to_col(self.col_to_num(start[0]) - 1) + str(int(start[1:]) - 1)
-        if int(start[1:]) - 1 >= 1:
-            temp_obj = board_object.get_space_info(temp)
-            if self.castle_check(temp) is True:
-                if temp_obj is None or temp_obj.get_color() != self.get_color():
-                    potential_moves.append(temp)
+        for moves in allowable_moves:
+            if 1 <= self.col_to_num(start[0]) + moves[0] <= 9 and 1 <= int(start[1:]) + moves[1] <= 10:
+                temp = self.num_to_col(self.col_to_num(start[0]) + moves[0]) + str(int(start[1:]) + moves[1])
+                temp_obj = board_object.get_space_info(temp)
+                if self.castle_check(temp) is True:
+                    if temp_obj is None or temp_obj.get_color() != self.get_color():
+                        potential_moves.append(temp)
 
         self.update_potential_moves(potential_moves)

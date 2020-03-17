@@ -15,6 +15,12 @@ class Chariot(Piece):
         self._title = "C"
         super().__init__(color, location)
 
+    def __repr__(self):
+        if self._color == "red":
+            return f'{"R"}{self._title}'
+        else:
+            return f'{"B"}{self._title}'
+
     def get_title(self):
         """
         This is a getter function that returns the title of the General object.

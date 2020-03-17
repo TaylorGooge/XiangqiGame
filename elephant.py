@@ -1,7 +1,6 @@
 from baseclasses import Piece
 
 
-
 class Elephant(Piece):
     """
     This class inherits from the Piece class and instantiates a General object.
@@ -15,6 +14,12 @@ class Elephant(Piece):
          """
         self._title = "E"
         super().__init__(color, location)
+
+    def __repr__(self):
+        if self._color == "red":
+            return f'{"R"}{self._title}'
+        else:
+            return f'{"B"}{self._title}'
 
     def get_title(self):
         """
@@ -66,41 +71,16 @@ class Elephant(Piece):
         :param end: The space the piece moved into at the conclusion of a valid move.
         :return: None
         """
-
+        allowable_moves = [(2, -2), (-2, -2), (-2, 2), (2, 2)]
         potential_moves = []
         start = end
 
-        # 2,-2
-        temp = self.col_to_num(start[0]) + 2
-        if temp <= 9 and int(start[1:]) - 2 >= 1:
-            temp = self.num_to_col(temp) + str(int(start[1:]) - 2)
-            temp_obj = board_object.get_space_info(temp)
-            if self.elephant_river_cross_check(temp) is True:
-                if temp_obj is None or temp_obj.get_color() != self.get_color():
-                    potential_moves.append(temp)
-        # -2,-2
-        temp = self.col_to_num(start[0]) - 2
-        if temp >= 1 and int(start[1:]) - 2 >= 1:
-            temp = self.num_to_col(temp) + str(int(start[1:]) - 2)
-            temp_obj = board_object.get_space_info(temp)
-            if self.elephant_river_cross_check(temp) is True:
-                if temp_obj is None or temp_obj.get_color() != self.get_color():
-                    potential_moves.append(temp)
-        # -2,2
-        temp = self.col_to_num(start[0]) - 2
-        if temp >= 1 and int(start[1:]) + 2 <= 10:
-            temp = self.num_to_col(temp) + str(int(start[1:]) + 2)
-            temp_obj = board_object.get_space_info(temp)
-            if self.elephant_river_cross_check(temp) is True:
-                if temp_obj is None or temp_obj.get_color() != self.get_color():
-                    potential_moves.append(temp)
-        # 2,2
-        temp = self.col_to_num(start[0]) + 2
-        if temp <= 9 and int(start[1:]) + 2 <= 10 and int(start[1:]) + 2 <= 10:
-            temp = self.num_to_col(temp) + str(int(start[1:]) + 2)
-            temp_obj = board_object.get_space_info(temp)
-            if self.elephant_river_cross_check(temp) is True:
-                if temp_obj is None or temp_obj.get_color() != self.get_color():
-                    potential_moves.append(temp)
+        for moves in allowable_moves:
+            if 1 <= self.col_to_num(start[0]) + moves[0] <= 9 and 1 <= int(start[1:]) + moves[1] <= 10:
+                temp = self.num_to_col(self.col_to_num(start[0]) + moves[0]) + str(int(start[1:]) + moves[1])
+                temp_obj = board_object.get_space_info(temp)
+                if self.elephant_river_cross_check(temp) is True:
+                    if temp_obj is None or temp_obj.get_color() != self.get_color():
+                        potential_moves.append(temp)
 
         self.update_potential_moves(potential_moves)

@@ -16,6 +16,12 @@ class Soldier(Piece):
         self._title = "S"
         super().__init__(color, location)
 
+    def __repr__(self):
+        if self._color == "red":
+            return f'{"R"}{self._title}'
+        else:
+            return f'{"B"}{self._title}'
+
     def get_title(self):
         """
         This is a getter function that returns the title of the General object.
@@ -49,71 +55,40 @@ class Soldier(Piece):
         :param board_object: The board class object.
         :return: None
         """
-
+        before_river_allowable_moves= [(0,1)]
+        after_river_allowable_moves = [(0,1), (1,0), (-1,0)]
         potential_moves = []
         start = end
 
         if self.get_color() == "red":
             if int(start[1:]) <= 5:
-                temp = start[0] + str(int(start[1:]) + 1)
-                result = board_object.get_space_info(temp)
-                if result is not None and result.get_color() != self.get_color():
-                    potential_moves.append(temp)
-                elif result is None:
-                    potential_moves.append(temp)
-            # if across the river try side to side
-            elif int(start[1:]) >= 6:
-                temp = self.col_to_num(start[0]) - 1
-                if temp >= 1:
-                    temp = self.num_to_col(temp) + start[1:]
-                    result = board_object.get_space_info(temp)
-                    if result is not None and result.get_color() != self.get_color():
-                        potential_moves.append(temp)
-                    elif result is None:
-                        potential_moves.append(temp)
-                if self.col_to_num(start[0]) + 1 <= 9:
-                    temp = self.num_to_col(self.col_to_num(start[0]) + 1) + str(start[1:])
-                    result = board_object.get_space_info(temp)
-                    if result is not None and result.get_color() != self.get_color():
-                        potential_moves.append(temp)
-                    elif result is None:
-                        potential_moves.append(temp)
-                temp = start[0] + str(int(start[1:]) + 1)
-                result = board_object.get_space_info(temp)
-                if result is not None and result.get_color() != self.get_color():
-                    potential_moves.append(temp)
-                elif result is None:
-                    potential_moves.append(temp)
-
-        if self.get_color() == "black":
-            if int(start[1:]) >= 6 and int(start[1:]) - 1 >= 1:
-                temp = start[0] + str(int(start[1]) - 1)
-                result = board_object.get_space_info(temp)
-                if result is not None and result.get_color() != self.get_color():
-                    potential_moves.append(temp)
-                elif result is None:
-                    potential_moves.append(temp)
-                # if the river is crossed check side to side
-            elif int(start[1:]) <= 5 and self.col_to_num(start[0]) - 1 >= 1:
-                temp = self.num_to_col(self.col_to_num(start[0]) - 1) + start[1:]
-                result = board_object.get_space_info(temp)
-                if result is not None and result.get_color() != self.get_color():
-                    potential_moves.append(temp)
-                elif result is None:
-                    potential_moves.append(temp)
-                if self.col_to_num(start[0]) + 1 <= 9:
-                    temp = self.num_to_col(self.col_to_num(start[0]) + 1) + start[1:]
-                    result = board_object.get_space_info(temp)
-                    if result is not None and result.get_color() != self.get_color():
-                        potential_moves.append(temp)
-                    elif result is None:
-                        potential_moves.append(temp)
-                if int(start[1]) - 1 >= 1:
-                    temp = start[0] + str(int(start[1]) - 1)
-                    result = board_object.get_space_info(temp)
-                    if result is not None and result.get_color() != self.get_color():
-                        potential_moves.append(temp)
-                    elif result is None:
-                        potential_moves.append(temp)
+                for moves in before_river_allowable_moves:
+                    if 1 <= int(start[1:]) + moves[1] <= 10:
+                        temp = start[0] + str(int(start[1:]) + moves[1])
+                        temp_obj = board_object.get_space_info(temp)
+                        if temp_obj is None or temp_obj.get_color() != self.get_color() :
+                            potential_moves.append(temp)
+            else:
+                for moves in after_river_allowable_moves:
+                    if 1 <= int(start[1:]) + moves[1] <= 10 and 1<= self.col_to_num(start[0]) + moves[0] <= 9:
+                        temp = self.num_to_col(self.col_to_num(start[0]) + moves[0])+ str(int(start[1:]) + moves[1])
+                        temp_obj = board_object.get_space_info(temp)
+                        if temp_obj is None or temp_obj.get_color() != self.get_color():
+                            potential_moves.append(temp)
+        elif self.get_color() == "black":
+            if int(start[1:]) >= 6:
+                for moves in before_river_allowable_moves:
+                    if 1<= int(start[1:]) + -(moves[1]) <=10:
+                        temp = start[0] + str(int(start[1:]) + -(moves[1]))
+                        temp_obj = board_object.get_space_info(temp)
+                        if temp_obj is None or temp_obj.get_color() != self.get_color():
+                            potential_moves.append(temp)
+            else:
+                for moves in after_river_allowable_moves:
+                    if 1 <= int(start[1:]) + -(moves[1]) <= 10 and 1 <= self.col_to_num(start[0]) + -(moves[0]) <= 9:
+                        temp = self.num_to_col(self.col_to_num(start[0]) + moves[0]) + str(int(start[1:]) + -(moves[1]))
+                        temp_obj = board_object.get_space_info(temp)
+                        if temp_obj is None or temp_obj.get_color() != self.get_color() :
+                            potential_moves.append(temp)
 
         self.update_potential_moves(potential_moves)

@@ -1,7 +1,6 @@
 from baseclasses import Piece
 
 
-
 class General(Piece):
     """
     This class inherits from the Piece class and instantiates a General object.
@@ -15,6 +14,12 @@ class General(Piece):
         """
         self._title = "G"
         super().__init__(color, location)
+
+    def __repr__(self):
+        if self._color == "red":
+            return f'{"R"}{self._title}'
+        else:
+            return f'{"B"}{self._title}'
 
     def get_title(self):
         """
@@ -123,38 +128,17 @@ class General(Piece):
         :param end: The space the piece moved to at the conclusion of a valid move.
         :return: None
         """
+        allowable_moves = [(-1, 0), (1, 0), (0, 1), (0, -1)]
         potential_moves = []
         start = end
 
-        # -1,0 move
-        temp = self.col_to_num(start[0]) - 1
-        if 4 <= temp <= 6:
-            temp = self.num_to_col(temp) + start[1:]
-            temp_obj = board_object.get_space_info(temp)
-            if temp_obj is None or temp_obj.get_color() != self.get_color():
-                potential_moves.append(temp)
-        # +1,0 move
-        temp = self.col_to_num(start[0]) + 1
-        if 4 <= temp <= 6:
-            temp = self.num_to_col(temp) + start[1:]
-            temp_obj = board_object.get_space_info(temp)
-            if temp_obj is None or temp_obj.get_color() != self.get_color():
-                potential_moves.append(temp)
-
-        #  0,+1 move
-        temp = int(start[1:]) + 1
-        if 1 <= temp <= 3:
-            temp = start[0] + str(int(start[1:]) + 1)
-            temp_obj = board_object.get_space_info(temp)
-            if temp_obj is None or temp_obj.get_color() != self.get_color():
-                potential_moves.append(temp)
-
-        # 0, -1
-        temp = int(start[1:]) - 1
-        if 7 <= temp <= 10 or 1<= temp <= 3:
-            temp = start[0] + str(temp)
-            temp_obj = board_object.get_space_info(temp)
-            if temp_obj is None or temp_obj.get_color() != self.get_color():
-                potential_moves.append(temp)
+        for moves in allowable_moves:
+            if 4 <= self.col_to_num(start[0]) + moves[0] <= 6:
+                if self.get_color() == "red" and 1 <= int(start[1:]) + moves[
+                    1] <= 3 or self.get_color() == "black" and 7 <= int(start[1:]) + moves[1] <= 10:
+                    temp = self.num_to_col(self.col_to_num(start[0]) + moves[0]) + str(int(start[1:]) + moves[1])
+                    temp_obj = board_object.get_space_info(temp)
+                    if temp_obj is None or temp_obj.get_color() != self.get_color():
+                        potential_moves.append(temp)
 
         self.update_potential_moves(potential_moves)

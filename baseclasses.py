@@ -27,6 +27,12 @@ class Piece:
         self._potential_moves = None
         self._location = location
 
+    def __repr__(self):
+        if self._color == "red":
+            return f'\033[0;31m{self._title}\033[0m"'
+        else:
+            return f"{self._title}"
+
     def get_location(self):
         """
         The function returns the location of the piece object.
